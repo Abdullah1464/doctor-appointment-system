@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  appointments:
+    build:
+      context: ./appointments
+      dockerfile: Dockerfile
+    ports:
+      - "7070:7070"
+    networks:
+      - appointment_network
+
+  doctors:
+    build:
+      context: ./doctors
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    networks:
+      - doctor_network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000" 
+    networks:
+      - frontend_network
+
+networks:
+  appointment_network:
+    driver: bridge
+  doctor_network:
+    driver: bridge
+  frontend_network:
+    driver: bridge
