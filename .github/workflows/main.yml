@@ -19,12 +19,12 @@ jobs:
       - name: Determine changed directory
         id: get_changed_dir
         run: |
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
-          if grep -q "^appointments/" changed_files.txt; then
+            git diff --name-only ${{ github.event.before }} ${{ github.sha }} > changed_files.txt
+            if grep -q "^appointments/" changed_files.txt; then
             echo "::set-output name=changed_dir::appointments"
-          else
+            else
             echo "::set-output name=changed_dir::other"
-          fi
+            fi
 
       - name: Build and push Docker image
         if: ${{ steps.get_changed_dir.outputs.changed_dir == 'appointments' }}
