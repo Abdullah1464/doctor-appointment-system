@@ -1,0 +1,42 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Determine changed directory
+        id: get_changed_dir
+        run: echo "::set-output name=changed_dir::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | cut -d'/' -f1 | uniq)"
+
+      - name: Build and push Docker image
+        if: ${{ steps.get_changed_dir.outputs.changed_dir == 'appointments' }}
+        env:
+          DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+        run: |
+          cd ${{ steps.get_changed_dir.outputs.changed_dir }}
+          docker build -t $DOCKER_HUB_USERNAME/${{ steps.get_changed_dir.outputs.changed_dir }}:${{ github.run_number }} .
+          docker login -u $DOCKER_HUB_USERNAME -p $DOCKER_HUB_TOKEN
+          docker push $DOCKER_HUB_USERNAME/${{ steps.get_changed_dir.outputs.changed_dir }}-app:${{ github.run_number }}
+
+      - name: Update docker-compose file
+        if: ${{ steps.get_changed_dir.outputs.changed_dir == 'appointments' }}
+        run: |
+          sed -i "s|image:.*|image: $DOCKER_HUB_USERNAME/appointments-app:${{ github.run_number }}|" docker-compose.yml
+          git config --global user.email "muhammad.abdullah2gr8@gmail.com"
+          git config --global user.name "Muhammad Abdullah"
+          git add docker-compose.yml
+          git commit -m "Update image tag in docker-compose file"
+          git push origin main
