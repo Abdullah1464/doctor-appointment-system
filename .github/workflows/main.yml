@@ -39,7 +39,7 @@ jobs:
        tags: |
          ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
 
-    - name: Build and push Appointments microservice
+    - name: Build and push Frontend microservice
       uses: docker/build-push-action@v2
       with:
         context: ./frontend
