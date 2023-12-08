@@ -8,7 +8,7 @@ services:
     ports:
       - "7070:7070"
     networks:
-      - appointment_network
+      - app_network
 
   doctors:
     build:
@@ -17,7 +17,7 @@ services:
     ports:
       - "9090:9090"
     networks:
-      - doctor_network
+      - app_network
 
   frontend:
     build:
@@ -26,12 +26,17 @@ services:
     ports:
       - "3000:3000" 
     networks:
-      - frontend_network
-
+      - app_network
+  db:
+    image: mysql:8.0  # Using MySQL
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: appointments_db
+      MYSQL_USER: db_user
+      MYSQL_PASSWORD: db_password
+    networks:
+      - app_network
 networks:
-  appointment_network:
-    driver: bridge
-  doctor_network:
-    driver: bridge
-  frontend_network:
+  app_network:
     driver: bridge
