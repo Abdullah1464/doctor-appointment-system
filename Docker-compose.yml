@@ -28,7 +28,7 @@ services:
     networks:
       - app_network
   db:
-    image: mysql:8.0  # Using MySQL
+    image: mysql:8.0  # Added Dummy DB as you said to assume DB is connected 
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
