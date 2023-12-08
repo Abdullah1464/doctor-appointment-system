@@ -1,12 +1,12 @@
 name: CI/CD Pipeline
 
 on:
-    push:
-      branches:
-        - main
-    pull_request:
-      branches:
-        - main
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-deploy:
@@ -22,7 +22,17 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+    - name: Filter changes based on path
+      uses: dorny/paths-filter@v2
+      id: changes
+      with:
+        filters: |
+          doctors: - 'doctors/**'
+          appointments: - 'appointments/**'
+          frontend: - 'frontend/**'
+
     - name: Build and push Doctors microservice
+      if: steps.changes.outputs.doctors == 'true'
       uses: docker/build-push-action@v2
       with:
         context: ./doctors
@@ -32,6 +42,7 @@ jobs:
           ${{ secrets.DOCKER_USERNAME }}/doctors-app:${{ github.sha }}
 
     - name: Build and push Appointments microservice
+      if: steps.changes.outputs.appointments == 'true'
       uses: docker/build-push-action@v2
       with:
        context: ./appointments
@@ -40,9 +51,34 @@ jobs:
          ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
 
     - name: Build and push Frontend microservice
+      if: steps.changes.outputs.frontend == 'true'
       uses: docker/build-push-action@v2
       with:
         context: ./frontend
         push: true
         tags: |
          ${{ secrets.DOCKER_USERNAME }}/frontend-app:${{ github.sha }}
+
+    - name: Update docker-compose file
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        file: ./docker-compose.yml
+        push: false
+        build: |
+          doctors:
+            context: ./doctors
+            dockerfile: ./doctors/Dockerfile
+            args:
+              - VERSION=${{ github.sha }}
+          appointments:
+            context: ./appointments
+            dockerfile: ./appointments/Dockerfile
+            args:
+              - VERSION=${{ github.sha }}
+          frontend:
+            context: ./frontend
+            dockerfile: ./frontend/Dockerfile
+            args:
+              - VERSION=${{ github.sha }}
+        target: compose
