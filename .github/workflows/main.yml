@@ -35,28 +35,22 @@ jobs:
       - name: Get list of modified files
         id: get-modified-files
         run: |
-          echo '{
-            "commits": [
-              {
-                "modified": [
-                  "doctors/*"
-                ]
-              }
-            ]
-          }' > commits.json
-          jq -r '.commits[].modified[]' commits.json > modified-files.txt
-
+                git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > modified-files.txt
+                if grep -q 'doctors/' modified-files.txt; then
+                  echo "::set-output name=doctors_changed::true"
+                fi
+    
       - name: Build and push Doctors microservice
-        if: contains(steps.get-modified-files.outputs.modified_files, 'doctors/')
+        if: steps.get-modified-files.outputs.doctors_changed == 'true'
         uses: docker/build-push-action@v2
         with:
-          context: ./doctors
-          push: true
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/doctors-app:${{ github.sha }}
+              context: ./doctors
+              push : true
+              tags: |
+                  ${{ secrets.DOCKER_USERNAME }}/doctors-app:${{ github.sha }}
 
       - name: Update docker-compose file
-        if: contains(steps.get-modified-files.outputs.modified_files, 'doctors/')
+        if: steps.get-modified-files.outputs.doctors_changed == 'true'
         run: |
             sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/doctors-app:${{ github.sha }}|" Docker-compose.yml
             git add Docker-compose.yml
@@ -96,7 +90,7 @@ jobs:
               ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
 
       - name: Update docker-compose file
-        if: contains(steps.get-modified-files.outputs.modified_files, 'appointments/')
+        if: steps.get-modified-files.outputs.appointments_changed == 'true'
         run: |
             sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}|" Docker-compose.yml
             git add Docker-compose.yml
@@ -121,20 +115,13 @@ jobs:
       - name: Get list of modified files
         id: get-modified-files
         run: |
-          echo '{
-            "commits": [
-              {
-                "modified": [
-                  "frontend/*"
-                ]
-              }
-            ]
-          }' > commits.json
-          jq -r '.commits[].modified[]' commits.json > modified-files.txt
-          cat modified-files.txt
-
+              git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > modified-files.txt
+              if grep -q 'frontend/' modified-files.txt; then
+                echo "::set-output name=frontend_changed::true"
+              fi
+  
       - name: Build and push Frontend microservice
-        if: contains(steps.get-modified-files.outputs.modified_files, 'frontend/')
+        if: steps.get-modified-files.outputs.frontend_changed == 'true'
         uses: docker/build-push-action@v2
         with:
             context: ./frontend
@@ -144,7 +131,7 @@ jobs:
   
 
       - name: Update docker-compose file
-        if: contains(steps.get-modified-files.outputs.modified_files, 'frontend/')
+        if: steps.get-modified-files.outputs.frontend_changed == 'true'
         run: |
             sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/frontend-app:${{ github.sha }}|" Docker-compose.yml
             git add Docker-compose.yml
