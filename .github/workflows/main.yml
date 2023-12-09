@@ -39,8 +39,7 @@ jobs:
             "commits": [
               {
                 "modified": [
-                  "doctors/app.js",
-                  "doctors/package.json"
+                  "doctors/*"
                 ]
               }
             ]
@@ -86,13 +85,13 @@ jobs:
             "commits": [
               {
                 "modified": [
-                  "appointments/app.js",
-                  "appointments/package.json"
+                  "appointments/*"
                 ]
               }
             ]
           }' > commits.json
           jq -r '.commits[].modified[]' commits.json > modified-files.txt
+          cat modified-files.txt
 
       - name: Build and push Appointments microservice
         if: contains(steps.get-modified-files.outputs.modified_files, 'appointments/')
@@ -133,8 +132,7 @@ jobs:
             "commits": [
               {
                 "modified": [
-                  "frontend/app.js",
-                  "frontend/package.json"
+                  "frontend/*"
                 ]
               }
             ]
