@@ -2,21 +2,21 @@ version: '3.8'
 
 services:
   appointments:
-image: abdullah144/appointments-app:92fae49feff4b4b80b219cd605be0e4f7f5d4885secrets.DOCKER_USERNAME }}/appointments-app:appointments
+    image: abdullah144/appointments-app:appointments
     ports:
       - "7070:7070"
     networks:
       - app_network
 
   doctors:
-    image: ${{ secrets.DOCKER_USERNAME }}/doctors-app:doctors
+    image: abdullah144/doctors-app:doctors
     ports:
       - "9090:9090"
     networks:
       - app_network
 
   frontend:
-    image: ${{ secrets.DOCKER_USERNAME }}/frontend-app:frontend
+    image: abdullah144/frontend-app:frontend
     ports:
       - "3000:3000" 
     networks:
