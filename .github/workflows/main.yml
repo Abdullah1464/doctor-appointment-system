@@ -35,6 +35,7 @@ jobs:
                 fi
         # These steps will only run if changes made in doctors folder
       - name: Login to DockerHub
+        if: steps.get-modified-files.outputs.doctors_changed == 'true'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -86,6 +87,7 @@ jobs:
         # These steps will only run if changes made in appointments folder
 
       - name: Login to DockerHub
+        if: steps.get-modified-files.outputs.appointments_changed == 'true'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
@@ -130,6 +132,7 @@ jobs:
               fi
       # These steps will only run if changes made in frontend folder
       - name: Login to DockerHub
+        if: steps.get-modified-files.outputs.frontend_changed == 'true'
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
