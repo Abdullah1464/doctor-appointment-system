@@ -91,7 +91,7 @@ jobs:
             ]
           }' > commits.json
           jq -r '.commits[].modified[]' commits.json > modified-files.txt
-          cat modified-files.txt
+          steps.get-modified-files.outputs.modified_files
 
       - name: Build and push Appointments microservice
         if: contains(steps.get-modified-files.outputs.modified_files, 'appointments/')
