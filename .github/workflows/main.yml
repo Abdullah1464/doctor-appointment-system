@@ -81,25 +81,19 @@ jobs:
       - name: Get list of modified files
         id: get-modified-files
         run: |
-          echo '{
-            "commits": [
-              {
-                "modified": [
-                  "appointments/*"
-                ]
-              }
-            ]
-          }' > commits.json
-          jq -r '.commits[].modified[]' commits.json > modified-files.txt
+            git diff --name-only ${{ github.event.before }} ${{ github.event.after }} > modified-files.txt
+            if grep -q 'appointments/' modified-files.txt; then
+              echo "::set-output name=appointments_changed::true"
+            fi
 
       - name: Build and push Appointments microservice
-        if: contains(steps.get-modified-files.outputs.modified-files, 'appointments/*')
+        if: steps.get-modified-files.outputs.appointments_changed == 'true'
         uses: docker/build-push-action@v2
         with:
           context: ./appointments
-          push: true
+          push : true
           tags: |
-            ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
+              ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
 
       - name: Update docker-compose file
         if: contains(steps.get-modified-files.outputs.modified_files, 'appointments/')
@@ -137,6 +131,7 @@ jobs:
             ]
           }' > commits.json
           jq -r '.commits[].modified[]' commits.json > modified-files.txt
+          cat modified-files.txt
 
       - name: Build and push Frontend microservice
         if: contains(steps.get-modified-files.outputs.modified_files, 'frontend/')
