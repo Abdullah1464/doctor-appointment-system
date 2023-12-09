@@ -91,10 +91,9 @@ jobs:
             ]
           }' > commits.json
           jq -r '.commits[].modified[]' commits.json > modified-files.txt
-          steps.get-modified-files.outputs.modified_files
 
       - name: Build and push Appointments microservice
-        if: contains(steps.get-modified-files.outputs.modified_files, 'appointments/')
+        if: contains(steps.get-modified-files.outputs.modified-files, 'appointments/*')
         uses: docker/build-push-action@v2
         with:
           context: ./appointments
