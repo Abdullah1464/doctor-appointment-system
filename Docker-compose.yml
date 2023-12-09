@@ -9,7 +9,7 @@ services:
       - app_network
 
   doctors:
-    image: abdullah144/doctors-app:573d552349a6eeb1557223cdfa5cb716c8b50bba
+    image: abdullah144/doctors-app:d14054c461072fa614d2a04bea18836a58dd8bb5
     ports:
       - "9090:9090"
     networks:
