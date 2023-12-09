@@ -28,7 +28,7 @@ services:
     networks:
       - app_network
   db:
-    image: abdullah144/appointments-app:07cf731afbe66a37744eec32f34d1171e3b0d4c3
+    image: abdullah144/appointments-app:711411595702801f6f3318a966400a5f0efc773c
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
