@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   appointments:
-    image: ${{ secrets.DOCKER_USERNAME }}/appointments-app:appointments
+        image: abdullah144/dappointments-app:cb760cd1f85d4f0273a8a2976c3159fce2bebcb3
     ports:
       - "7070:7070"
     networks:
