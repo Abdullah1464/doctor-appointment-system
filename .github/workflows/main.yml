@@ -96,7 +96,7 @@ jobs:
         run: |
             git config --global user.email "muhammad.abdullah2gr8@gmail.com"
             git config --global user.name "abdullah1464"
-            sed -i -E '/^\s+appointments:/,/^\s*$/ s|^(\s+image:\s+)[^\s]+|\1${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}|' docker-compose.yml
+            sed -i -E '/^\s+appointments:/,/^\s*$/ s|^(\s+image:\s+)[^\s]+|\1${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}|' Docker-compose.yml
             git add Docker-compose.yml
             git commit -m "Update docker-compose file with new image tag"
             git push
