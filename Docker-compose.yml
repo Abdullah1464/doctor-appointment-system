@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   appointments:
-image: abdullah144/appointments-app:b5aa8c3ae749288ae3f4a88a2be55474753dee8fs-app:1c22f43e9cf6571dad426c6b9f7f305bd00b1830s-app:2100afed72fc821430fd592263aa8584d50b052cs-app:c9337bb5b37578610b5b365599e55290ef0e5b15
+image: abdullah144/appointments-app:3ea7b26bf42df2f625108ce63ad8c7cc36cc4f0fs-app:b5aa8c3ae749288ae3f4a88a2be55474753dee8fs-app:1c22f43e9cf6571dad426c6b9f7f305bd00b1830s-app:2100afed72fc821430fd592263aa8584d50b052cs-app:c9337bb5b37578610b5b365599e55290ef0e5b15
     ports:
       - "7070:7070"
     networks:
