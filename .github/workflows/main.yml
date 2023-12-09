@@ -54,9 +54,9 @@ jobs:
         run: |
             git config --global user.email "muhammad.abdullah2gr8@gmail.com"
             git config --global user.name "abdullah1464"
-            sed -i -E 's|^(    image: ${{ secrets.DOCKER_USERNAME }}/appointments-app:).*|\1${{ github.sha }}|' Docker-compose.yml
+            sed -i 's|${{ secrets.DOCKER_USERNAME }}/appointments-image:.*|${{ secrets.DOCKER_USERNAME }}/appointments-image:'"${{ github.sha }}"'|' Docker-compose.yml
             git add Docker-compose.yml
-            git commit -m "Update docker-compose file with new image tag"
+            git commit -m "Update Doctors microservice image tag to ${GITHUB_SHA}"
             git push
 
   build-and-deploy-appointments:
