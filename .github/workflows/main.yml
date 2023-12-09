@@ -39,7 +39,7 @@ jobs:
                 if grep -q 'doctors/' modified-files.txt; then
                   echo "::set-output name=doctors_changed::true"
                 fi
-    
+        # These both steps will only run if changes made in doctors folder
       - name: Build and push Doctors microservice
         if: steps.get-modified-files.outputs.doctors_changed == 'true'
         uses: docker/build-push-action@v2
@@ -81,7 +81,7 @@ jobs:
             if grep -q 'appointments/' modified-files.txt; then
               echo "::set-output name=appointments_changed::true"
             fi
-
+        # These both steps will only run if changes made in appointments folder
       - name: Build and push Appointments microservice
         if: steps.get-modified-files.outputs.appointments_changed == 'true'
         uses: docker/build-push-action@v2
@@ -123,7 +123,7 @@ jobs:
               if grep -q 'frontend/' modified-files.txt; then
                 echo "::set-output name=frontend_changed::true"
               fi
-  
+      # These both steps will only run if changes made in frontend folder
       - name: Build and push Frontend microservice
         if: steps.get-modified-files.outputs.frontend_changed == 'true'
         uses: docker/build-push-action@v2
