@@ -1,48 +1,129 @@
 name: CI/CD Pipeline
 
 on:
-    push:
-      branches:
-        - main
-    pull_request:
-      branches:
-        - main
+  push:
+    branches:
+      - main
+    paths:
+      - 'doctors/**'
+      - 'appointments/**'
+      - 'frontend/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'doctors/**'
+      - 'appointments/**'
+      - 'frontend/**'
 
 jobs:
-  build-and-deploy:
+  build-and-deploy-doctors:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-    - name: Login to DockerHub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-    - name: Build and push Doctors microservice
-      uses: docker/build-push-action@v2
-      with:
-        context: ./doctors
-        file: ./doctors/Dockerfile
-        push: true
-        tags: |
-          ${{ secrets.DOCKER_USERNAME }}/doctors-app:${{ github.sha }}
+      - name: Get list of modified files
+        id: get-modified-files
+        run: |
+          echo "${{ toJson(github.event.commits) }}" > commits.json
+          jq -r '.[].modified[]' commits.json > modified-files.txt
 
-    - name: Build and push Appointments microservice
-      uses: docker/build-push-action@v2
-      with:
-       context: ./appointments
-       push: true
-       tags: |
-         ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
+      - name: Build and push Doctors microservice
+        if: contains(steps.get-modified-files.outputs.modified_files, 'doctors/')
+        uses: docker/build-push-action@v2
+        with:
+          context: ./doctors
+          file: ./doctors/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/doctors-app:${{ github.sha }}
 
-    - name: Build and push Appointments microservice
-      uses: docker/build-push-action@v2
-      with:
-        context: ./frontend
-        push: true
-        tags: |
-         ${{ secrets.DOCKER_USERNAME }}/frontend-app:${{ github.sha }}
+      - name: Update docker-compose file
+        if: contains(steps.get-modified-files.outputs.modified_files, 'doctors/')
+        run: |
+          sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/doctors-app:${{ github.sha }}|" docker-compose.yml
+          git add docker-compose.yml
+          git commit -m "Update docker-compose file with new image tag"
+          git push
+
+  build-and-deploy-appointments:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Get list of modified files
+        id: get-modified-files
+        run: |
+          echo "${{ toJson(github.event.commits) }}" > commits.json
+          jq -r '.[].modified[]' commits.json > modified-files.txt
+
+      - name: Build and push Appointments microservice
+        if: contains(steps.get-modified-files.outputs.modified_files, 'appointments/')
+        uses: docker/build-push-action@v2
+        with:
+          context: ./appointments
+          file: ./appointments/Dockerfile
+          push: true
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
+
+      - name: Update docker-compose file
+        if: contains(steps.get-modified-files.outputs.modified_files, 'appointments/')
+        run: |
+          sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}|" docker-compose.yml
+          git add docker-compose.yml
+          git commit -m "Update docker-compose file with new image tag"
+          git push
+
+  build-and-deploy-frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Get list of modified files
+        id: get-modified-files
+        run: |
+          echo "${{ toJson(github.event.commits) }}" > commits.json
+          jq -r '.[].modified[]' commits.json > modified-files.txt
+
+      - name: Build and push Frontend microservice
+        if: contains(steps.get-modified-files.outputs.modified_files, 'frontend/')
+        uses: docker/build-push-action@v2
+        with:
+          context: ./frontend
+          file: ./frontend
+
+      - name: Update docker-compose file
+        if: contains(steps.get-modified-files.outputs.modified_files, 'frontend/')
+        run: |
+            sed -i "s|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/frontend-app:${{ github.sha }}|" docker-compose.yml
+            git add docker-compose.yml
+            git commit -m "Update docker-compose file with new image tag"
+            git push
