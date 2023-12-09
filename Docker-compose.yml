@@ -2,37 +2,32 @@ version: '3.8'
 
 services:
   appointments:
-    build:
-      context: ./appointments
-      dockerfile: Dockerfile
+    image: ${{ secrets.DOCKER_USERNAME }}/appointments-app:appointments
     ports:
       - "7070:7070"
     networks:
       - app_network
 
   doctors:
-    build:
-      context: ./doctors
-      dockerfile: Dockerfile
+    image: ${{ secrets.DOCKER_USERNAME }}/doctors-app:doctors
     ports:
       - "9090:9090"
     networks:
       - app_network
 
   frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
+    image: ${{ secrets.DOCKER_USERNAME }}/frontend-app:frontend
     ports:
       - "3000:3000" 
     networks:
       - app_network
+  #you said to assume it has db
   db:
-    image: abdullah144/appointments-app:07cf731afbe66a37744eec32f34d1171e3b0d4c3
+    image: mysql:3.8
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: appointments_db
+      MYSQL_DATABASE: my_db
       MYSQL_USER: db_user
       MYSQL_PASSWORD: db_password
     networks:
