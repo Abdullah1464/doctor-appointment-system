@@ -57,6 +57,7 @@ jobs:
             sed -i 's|${{ secrets.DOCKER_USERNAME }}/doctors-app:.*|${{ secrets.DOCKER_USERNAME }}/doctors-app:'"${{ github.sha }}"'|' Docker-compose.yml
             git add Docker-compose.yml
             git commit -m "Update docker-compose file with new image tag"
+            git pull origin main --no-rebase
             git push
 
   build-and-deploy-appointments:
@@ -99,6 +100,7 @@ jobs:
             sed -i 's|${{ secrets.DOCKER_USERNAME }}/appointments-app:.*|${{ secrets.DOCKER_USERNAME }}/appointments-app:'"${{ github.sha }}"'|' Docker-compose.yml
             git add Docker-compose.yml
             git commit -m "Update docker-compose file with new image tag"
+            git pull origin main --no-rebase
             git push
 
   build-and-deploy-frontend:
@@ -142,4 +144,5 @@ jobs:
             sed -i 's|${{ secrets.DOCKER_USERNAME }}/frontend-app:.*|${{ secrets.DOCKER_USERNAME }}/frontend-app:'"${{ github.sha }}"'|' Docker-compose.yml
             git add Docker-compose.yml
             git commit -m "Update docker-compose file with new image tag"
+            git pull origin main --no-rebase
             git push
