@@ -2,28 +2,28 @@ version: '3.8'
 
 services:
   appointments:
-    image: ${{ secrets.DOCKER_USERNAME }}/appointments-app:appointments
+    image: abdullah144/doctors-app:0db2583d0b5d0b9949fbc9bf24af5520111df116
     ports:
       - "7070:7070"
     networks:
       - app_network
 
   doctors:
-    image: ${{ secrets.DOCKER_USERNAME }}/doctors-app:doctors
+    image: abdullah144/doctors-app:0db2583d0b5d0b9949fbc9bf24af5520111df116
     ports:
       - "9090:9090"
     networks:
       - app_network
 
   frontend:
-    image: ${{ secrets.DOCKER_USERNAME }}/frontend-app:frontend
+    image: abdullah144/doctors-app:0db2583d0b5d0b9949fbc9bf24af5520111df116
     ports:
       - "3000:3000" 
     networks:
       - app_network
   #you said to assume it has db
   db:
-    image: mysql:3.8
+    image: abdullah144/doctors-app:0db2583d0b5d0b9949fbc9bf24af5520111df116
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
