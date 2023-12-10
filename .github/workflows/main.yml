@@ -49,6 +49,7 @@ jobs:
               push : true
               tags: |
                   ${{ secrets.DOCKER_USERNAME }}/doctors-app:${{ github.sha }}
+                  ${{ secrets.DOCKER_USERNAME }}/doctors-app:latest
 
       - name: Update docker-compose file
         if: steps.get-modified-files.outputs.doctors_changed == 'true'
@@ -101,6 +102,7 @@ jobs:
           push : true
           tags: |
               ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
+              ${{ secrets.DOCKER_USERNAME }}/appointments-app:latest
 
       - name: Update docker-compose file
         if: steps.get-modified-files.outputs.appointments_changed == 'true'
@@ -146,6 +148,7 @@ jobs:
             push : true
             tags: |
                 ${{ secrets.DOCKER_USERNAME }}/frontend-app:${{ github.sha }}
+                ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
   
 
       - name: Update docker-compose file
