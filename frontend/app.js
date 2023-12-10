@@ -11,12 +11,12 @@ const axios = require('axios');
 const app = express();
 app.use(express.static('public'));
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html'); 
+  res.sendFile(__dirname + '/public/index.html'); // Adjust the path to your HTML file
 });
 
 app.get('/hello', (req, res) => {
   res.send('Hello world\n');
-});
+
 
 // Define your API endpoints and routes 
 app.get('/api/doctors', async (req, res) => {
