@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 
 app.get('/hello', (req, res) => {
   res.send('Hello world\n');
-
+});
 
 // Define your API endpoints and routes 
 app.get('/api/doctors', async (req, res) => {
