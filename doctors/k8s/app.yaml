@@ -1,0 +1,70 @@
+# Bonus configmap named doctors having intro about me.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: doctors
+data:
+  details.txt: |
+    My name is Muhammad Abdullah. DevOps Batch 2020. I'll be a future SRE Engineer in Sir Ali Kahoot's company InshaAllah.
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: doctors
+  labels:
+    app: doctors
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: doctors
+  template:
+    metadata:
+      labels:
+        app: doctors
+    spec:
+      containers:
+        - name: doctors
+          image: abdullah144/doctors-app:latest
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: details-volume
+              mountPath: /user
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          livenessProbe:
+            tcpSocket:
+              port: 9090
+            initialDelaySeconds: 15
+            periodSeconds: 10
+
+          readinessProbe:
+            tcpSocket:
+              port: 9090
+            initialDelaySeconds: 20
+            periodSeconds: 15
+
+      volumes:
+        - name: details-volume
+          configMap:
+            name: doctors
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: doctors
+spec:
+  selector:
+    app: doctors
+  ports:
+    - protocol: TCP
+      port: 9090
+      targetPort: 9090
