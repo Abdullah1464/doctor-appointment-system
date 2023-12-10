@@ -11,7 +11,7 @@ const axios = require('axios');
 const app = express();
 app.use(express.static('public'));
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/public/index.html'); // Adjust the path to your HTML file
+  res.sendFile(__dirname + '/public/index.html'); 
 });
 
 app.get('/hello', (req, res) => {
