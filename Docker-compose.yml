@@ -16,7 +16,7 @@ services:
       - app_network
 
   frontend:
-    image: abdullah144/frontend-app:ea020e7b5b0a2af1005d45f254e1a5a5d9600650
+    image: abdullah144/frontend-app:d993cad207e6f99de7584d1fedd8feffd46a9d8f
     ports:
       - "3000:3000" 
     networks:
