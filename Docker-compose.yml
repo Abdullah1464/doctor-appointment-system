@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   appointments:
-    image: abdullah144/appointments-app:ea020e7b5b0a2af1005d45f254e1a5a5d9600650
+    image: abdullah144/appointments-app:371675832226c41920eae4e7cbbff239c27cc135
     ports:
       - "7070:7070"
     networks:
