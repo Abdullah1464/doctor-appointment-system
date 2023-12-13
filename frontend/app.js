@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/hello', (req, res) => {
-  res.send('\nHello world\n');
+  res.send('Hello world\n');
 });
 
 // Define your API endpoints and routes 
