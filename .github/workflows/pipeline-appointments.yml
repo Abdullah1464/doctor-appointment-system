@@ -1,0 +1,56 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'appointments/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'appointments/**'
+
+jobs:
+
+  build-and-deploy-appointments:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build and push Appointments microservice
+        uses: docker/build-push-action@v2
+        with:
+          context: ./appointments
+          push : true
+          tags: |
+              ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
+              ${{ secrets.DOCKER_USERNAME }}/appointments-app:latest
+
+      - name: Update docker-compose file
+        run: |
+            git config --global user.email "muhammad.abdullah2gr8@gmail.com"
+            git config --global user.name "abdullah1464"
+            sed -i -E '/^\s+appointments:/,/^\s*$/ s|^(\s+image:\s+abdullah144/appointments-app:).+|\1'"${{ github.sha }}"'|' Docker-compose.yml
+            cat Docker-compose.yml
+            git add Docker-compose.yml
+            git commit -m "Update Appointments microservice image tag to ${GITHUB_SHA}"
+            git pull origin main --no-rebase
+            git push
