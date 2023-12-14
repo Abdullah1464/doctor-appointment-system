@@ -35,7 +35,6 @@ jobs:
                 push : true
                 tags: |
                     ${{ secrets.DOCKER_USERNAME }}/frontend-app:${{ github.sha }}
-                    ${{ secrets.DOCKER_USERNAME }}/frontend-app:latest
       
     
           - name: Update docker-compose file

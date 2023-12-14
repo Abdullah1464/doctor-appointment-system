@@ -36,7 +36,6 @@ jobs:
           push : true
           tags: |
               ${{ secrets.DOCKER_USERNAME }}/appointments-app:${{ github.sha }}
-              ${{ secrets.DOCKER_USERNAME }}/appointments-app:latest
 
       - name: Update docker-compose file
         run: |
