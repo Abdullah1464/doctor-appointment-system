@@ -11,7 +11,7 @@ services:
       - app_network
 
   doctors:
-    image: abdullah144/doctors-app:89e4644f42b267a60812bd047f2c212e5d5bcdbf
+    image: abdullah144/doctors-app:c57fdadac432ef829c2fa26d10d5c4fd0c5f1130
     ports:
       - "9090:9090"
     environment:
