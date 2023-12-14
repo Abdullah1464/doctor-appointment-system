@@ -5,6 +5,8 @@ services:
     image: abdullah144/appointments-app:4f8a1c600fdb83e590040f1a60bb430bad394a8e
     ports:
       - "7070:7070"
+    environment:
+      - APPOINTMENTS_SERVICE_URL=appointments:7070
     networks:
       - app_network
 
@@ -12,6 +14,8 @@ services:
     image: abdullah144/doctors-app:89e4644f42b267a60812bd047f2c212e5d5bcdbf
     ports:
       - "9090:9090"
+    environment:
+      - DOCTORS_SERVICE_URL=doctors:9090 
     networks:
       - app_network
 
@@ -19,11 +23,17 @@ services:
     image: abdullah144/frontend-app:b9019520c815dba77ac4b5546a9d4c57e6077489
     ports:
       - "3000:3000" 
+    environment:
+      - DOCTORS_SERVICE_URL=doctors:9090
+      - APPOINTMENTS_SERVICE_URL=appointments:7070
+    depends_on:
+      - doctors
+      - appointments
     networks:
       - app_network
   #you said to assume it has db
   db:
-    image: mysql:3.8
+    image: mysql:5.7
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: password
