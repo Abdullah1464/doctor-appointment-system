@@ -30,7 +30,7 @@ app.get('/api/doctors', async (req, res) => {
     res.status(500).json({ error: 'Could not fetch doctors' });
   }
 });
-
+// added a comment
 app.get('/api/appointments', async (req, res) => {
   let url  = process.env.APPOINTMENTS_SERVICE_URL;
   try {
