@@ -27,9 +27,12 @@ spec:
     spec:
       containers:
         - name: doctors
-          image: abdullah144/doctors-app:latest
+          image: abdullah144/doctors-app:3a5310ad150aa54c896c9d303be1fce59f8eb49c
           ports:
             - containerPort: 9090
+          env:
+            - name: DOCTORS_SERVICE_URL
+              value: "doctors:9090"
           volumeMounts:
             - name: details-volume
               mountPath: /user

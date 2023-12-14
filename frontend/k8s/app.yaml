@@ -16,9 +16,14 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: abdullah144/frontend-app:latest
+          image: abdullah144/frontend-app:fc4f678afba449fb787282c19b9fcdd7efdf43f7
           ports:
             - containerPort: 3000
+          env:
+            - name: DOCTORS_SERVICE_URL
+              value: "doctors:9090"
+            - name: APPOINTMENTS_SERVICE_URL
+              value: "appointments:7070"
           resources:
             limits:
               memory: "512Mi"
@@ -45,7 +50,9 @@ metadata:
 spec:
   selector:
     app: frontend
+  type: NodePort
   ports:
     - protocol: TCP
       port: 3000
       targetPort: 3000
+      nodePort: 30000
